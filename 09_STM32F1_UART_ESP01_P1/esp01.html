@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ESP01 Client</title>
+</head>
+<body>
+    <h3>Click into the button to toggle the LED</h3>
+    <p>Blue LED State <span id="BLED">____</span></p>
+    <p>Red LED State <span id="RLED">____</span></p>
+    <button id="1" onclick="ledToggle(this.id)">Blue LED</button>
+    <button id="2" onclick="ledToggle(this.id)">Red LED</button>
+    <script>
+        function ledToggle(clicked_id) {
+            var xhr = new XMLHttpRequest();
+            var url = clicked_id;
+            xhr.onreadystatechange = function(){
+                if (this.readystate == 4 && this.status == 200){
+                    if (this.responseText == "10"){
+                        document.getElementById("BLED").innerHTML = "OFF";
+                    } else if (this.responseText == "11"){
+                        document.getElementById("BLED").innerHTML = "On";
+                    } else if (this.responseText == "20"){
+                        document.getElementById("RLED").innerHTML = "OFF";
+                    } else if (this.responseText == "21"){
+                        document.getElementById("RLED").innerHTML = "On";
+                    }
+                }
+            };
+            xhr.open("GET",url,true);
+            xhr.send();
+        }
+    </script>
+</body>
+</html>

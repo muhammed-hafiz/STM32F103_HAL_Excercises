@@ -1,0 +1,47 @@
+# Toolchain
+CC = arm-none-eabi-gcc
+LD = arm-none-eabi-ld
+OBJCOPY = arm-none-eabi-objcopy
+SIZE = arm-none-eabi-size
+
+# Compiler Flags
+CFLAGS  = -mcpu=cortex-m3 -mthumb -Wall -O2 -ffreestanding -nostdlib
+LDFLAGS = -T link.ld -nostdlib
+
+# Files
+SOURCES = main.c startup.c gpio_driver.c
+OBJECTS = $(SOURCES:.c=.o)
+TARGET  = firmware
+
+# Build Rules
+all: $(TARGET).elf $(TARGET).bin
+
+$(TARGET).elf: $(OBJECTS) link.ld
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(SIZE) $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OBJCOPY) -O binary $< $@
+
+%.o: %.c 
+	$(CC) $(CFLAGS) -c $< -o $@
+
+main.o: gpio_driver.h
+gpio_driver.o: gpio_driver.h
+
+clean:
+	rm -f $(OBJECTS) $(TARGET).elf $(TARGET).bin
+
+# flash firmwere to stm32
+stmflash: firmware.bin
+	stm32flash -w firmware.bin -v -g 0x08000000 /dev/ttyUSB0
+
+# -w firmware.bin → Writes the firmware to Flash.
+# -v → Verifies the write process.
+# -g 0x08000000 → Starts execution from Flash.
+# /dev/ttyUSB0 → Serial port.
+
+
+# start execution from flash
+execute:
+	stm32flash -g 0x08000000 /dev/ttyUSB0	

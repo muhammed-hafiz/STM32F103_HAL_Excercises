@@ -1,0 +1,45 @@
+
+***************Hardware*******************
+
+AT // detect ESP-01
+
+AT+RESTORE // factory reset
+
+
+
+**************WiFi************************
+
+AT+CWMODE_CUR // WiFi mode as station 
+				1: station
+				2: softAP
+				3: softAP + station
+
+AT+CWLAP // list available APs
+
+AT+CWJAP_CUR  // connect to AP
+			="abc","0123468749"
+			AT+CWJAP_CUR="TP-Link_FE86","90464706"
+
+
+*****************Connection**************************
+
+AT+CIPSTATUS // information about connection
+				2: got IP
+				3: Connected
+				4: Disconnected
+
+
+AT+CIPMUX=1  // enable muliple connections
+
+
+AT+CIPSERVER=1,80	// configure as TCP server THEN port 80 to be handle htttp requests
+
+
+AT+CIFSR 	// get IP address			CIFSR:STAIP,"192.168.1.127"
+										CIFSR:STAMAC,"48:3f:da:5f:c4:10"
+
+
+
+AT+CIPSEND=id,length      // send data
+
+AT+CIPCLOSE=id 			// close connection
